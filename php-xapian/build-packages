@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+cd xapian-bindings-1.4.3
+debuild -e PHP7_VERSIONS=$v -us -uc
+cd ..
+mv *.deb deb/
+
+

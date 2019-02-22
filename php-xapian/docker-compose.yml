@@ -1,0 +1,7 @@
+version: '3'
+services:
+  php-xapian-builder:
+    build: .
+    command: /home/builder/build-packages
+    volumes:
+      - ./deb:/home/builder/packages
