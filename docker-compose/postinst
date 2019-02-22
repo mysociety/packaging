@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# Add symlink to /usr/local/bin
+#
+
+ln -s /opt/docker/bin/docker-compose /usr/local/bin/docker-compose

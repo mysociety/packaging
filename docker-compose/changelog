@@ -1,0 +1,15 @@
+docker-compose (1.23.2-ms1) experimental; urgency=medium
+
+  * Package created with FPM
+  * See https://github.com/docker/compose/releases/tag/1.23.2
+
+ -- mySociety <sysadmin@mysociety.org>  Fri, 22 Feb 2019 10:55:05 +0100
+
+docker-compose (1.22.0-ms1) experimental; urgency=medium
+
+  * Package created with FPM
+  * See https://github.com/docker/compose/releases/tag/1.22.0
+
+ -- mySociety <sysadmin@mysociety.org>  Thurs, 25 Oct 2018 15:06::07 +0100
+
+	

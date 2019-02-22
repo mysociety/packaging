@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# removes Packer symlink in /usr/local/bin
+#
+
+rm -f /usr/local/bin/docker-compose
