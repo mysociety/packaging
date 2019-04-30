@@ -1,8 +1,8 @@
 # PHP7 Bindings for Xapian
 
-This builds the [PHP7 bindings for Xapian](https://xapian.org/docs/bindings/php7/). The default Stretch repositories have Xapian 1.4.3 but don't include a package with the PHP bindings for licensing reasons.
+This builds the [PHP7 bindings for Xapian](https://xapian.org/docs/bindings/php7/). The default Stretch repositories have Xapian 1.4.3 but don't include a package with the PHP bindings for licensing reasons. This version has [a bug that causes segfaults](https://trac.xapian.org/ticket/748), so we build against 1.4.9 which is available from Stetch Backports.
 
-The bindings can be built using the `xapian-bindings` source package, but there are issues with the build scripts in the `debian/` directory that cause the build to fail. These are fixed upstream, so merging some more updated scripts with the 1.4.3 sources permits a successful build that passes the tests.
+The bindings are built using the `xapian-bindings` source archives downloaded from snapshot.debian.org rather than installing directly using `apt-get source` to ensure we get a matching version.
 
 This process is handled in a Docker container, built with the `Dockerfile` in this directory. Running `./build.sh` will build the container, then run it and output the debian packages into `./deb/`. Output is printed to STDOUT, so you can see what's going on.
 
