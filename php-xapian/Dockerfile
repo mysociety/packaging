@@ -1,6 +1,7 @@
 FROM debian:stretch
 
 ENV DEBIAN_FRONTEND noninteractive
+ARG SOURCE_URL=https://snapshot.debian.org/archive/debian/20181104T030400Z/pool/main/x/xapian-bindings
 
 COPY sources.list /etc/apt/sources.list
 
@@ -12,25 +13,26 @@ RUN apt-get -qq update \
         ca-certificates \
         devscripts \
         git \
-        libxapian-dev \
         php7.0-dev \
-        php7.0-cli
+        php7.0-cli \
+        wget \
+      && apt-get -t stretch-backports install -y \
+        libxapian-dev
 
 WORKDIR /home/builder
 USER builder 
 
-RUN set -x; \
-    mkdir deb; \
-    apt-get source xapian-bindings=1.4.3-1; \
-    cd xapian-bindings-1.4.3; \
-    rm -fr debian/; \
-    git clone https://salsa.debian.org/olly/xapian-bindings.git debian; \
-    cd debian; \
-    git checkout debian/1.4.5-1; \
-    git checkout debian/1.4.3-1 changelog; \
-    cd ..; \
-    echo php7 > debian/bindings-to-package; \
-    ./debian/rules maint PHP7_VERSIONS=7.0
+# Get the sources
+RUN wget ${SOURCE_URL}/xapian-bindings_1.4.9.orig.tar.xz \
+      && wget ${SOURCE_URL}/xapian-bindings_1.4.9-1.debian.tar.xz \
+      && wget ${SOURCE_URL}/xapian-bindings_1.4.9-1.dsc \
+      && tar xJf xapian-bindings_1.4.9.orig.tar.xz \
+      && tar xJf xapian-bindings_1.4.9-1.debian.tar.xz -C xapian-bindings-1.4.9
+
+# Setup
+RUN cd xapian-bindings-1.4.9 \
+      && echo php7 > debian/bindings-to-package \
+      && ./debian/rules maint PHP7_VERSIONS=7.0
 
 COPY build-packages .
 CMD /home/builder/build-packages
