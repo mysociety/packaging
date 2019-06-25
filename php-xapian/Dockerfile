@@ -1,7 +1,7 @@
 FROM debian:stretch
 
 ENV DEBIAN_FRONTEND noninteractive
-ARG SOURCE_URL=https://snapshot.debian.org/archive/debian/20181104T030400Z/pool/main/x/xapian-bindings
+ARG SOURCE_URL=https://snapshot.debian.org/archive/debian/20190625T042133Z/pool/main/x/xapian-bindings/
 
 COPY sources.list /etc/apt/sources.list
 
@@ -23,14 +23,14 @@ WORKDIR /home/builder
 USER builder 
 
 # Get the sources
-RUN wget ${SOURCE_URL}/xapian-bindings_1.4.9.orig.tar.xz \
-      && wget ${SOURCE_URL}/xapian-bindings_1.4.9-1.debian.tar.xz \
-      && wget ${SOURCE_URL}/xapian-bindings_1.4.9-1.dsc \
-      && tar xJf xapian-bindings_1.4.9.orig.tar.xz \
-      && tar xJf xapian-bindings_1.4.9-1.debian.tar.xz -C xapian-bindings-1.4.9
+RUN wget ${SOURCE_URL}/xapian-bindings_1.4.11.orig.tar.xz \
+      && wget ${SOURCE_URL}/xapian-bindings_1.4.11-2.debian.tar.xz \
+      && wget ${SOURCE_URL}/xapian-bindings_1.4.11-2.dsc \
+      && tar xJf xapian-bindings_1.4.11.orig.tar.xz \
+      && tar xJf xapian-bindings_1.4.11-2.debian.tar.xz -C xapian-bindings-1.4.11
 
 # Setup
-RUN cd xapian-bindings-1.4.9 \
+RUN cd xapian-bindings-1.4.11 \
       && echo php7 > debian/bindings-to-package \
       && ./debian/rules maint PHP7_VERSIONS=7.0
 

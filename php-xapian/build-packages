@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-cd xapian-bindings-1.4.9
+cd xapian-bindings-1.4.11
 debuild -us -uc
 cd ..
 mv *.deb deb/
