@@ -1,0 +1,7 @@
+version: '3'
+services:
+  libvmod-redis-builder:
+    build: .
+    volumes:
+      - ./deb:/deb
+
