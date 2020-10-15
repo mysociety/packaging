@@ -6,7 +6,7 @@ build:
 	@echo "==> Building image..."
 	docker build -t heap-priority-builder:latest .
 	@echo "==> Extracting build artefacts..."
-	docker run --rm -v ${PWD}/deb:/deb crypt-idea-builder:latest
+	docker run --rm -v ${PWD}/deb:/deb heap-priority-builder:latest
 clean:
 	@echo "==> Removing any old artefacts..."
 	rm deb/* || echo "==> No artefacts found."
