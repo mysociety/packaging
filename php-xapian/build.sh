@@ -1,7 +1,9 @@
 #!/bin/bash
 
+DIST=${1:-buster}
+
 echo "==> Building docker image..."
-docker build -t php-xapian-builder:latest .
+docker build -f Dockerfile.${DIST} -t php-xapian-builder:latest .
 
 if [ $? -ne 0 ]; then
   echo "==> Build Failed, aborting."
@@ -9,5 +11,5 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "==> Building software..."
+mkdir -p deb/${DIST}
 docker run -v ${PWD}/deb:/home/builder/deb php-xapian-builder:latest
-
