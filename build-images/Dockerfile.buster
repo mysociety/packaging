@@ -1,0 +1,3 @@
+FROM debian:buster
+ENV DEBIAN_FRONTEND noninteractive
+COPY sources.list.buster /etc/apt/sources.list
