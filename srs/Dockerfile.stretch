@@ -1,0 +1,16 @@
+FROM mysocietyorg/stretch-builder
+ENV DEBIAN_FRONTEND noninteractive
+ENV SRS_VERSION 0.31
+RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
+RUN apt-get -qq update && apt-get install -qq \
+      build-essential \
+      devscripts \
+      fakeroot \
+      libmldbm-perl \
+      libtest-pod-coverage-perl \
+      libtest-pod-perl
+WORKDIR /home/builder
+USER builder
+RUN apt-get source srs
+COPY . .
+CMD /home/builder/build-packages
