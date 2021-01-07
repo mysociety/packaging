@@ -1,0 +1,27 @@
+FROM debian:buster
+LABEL maintainer="sysadmin@mysociety.org"
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBEMAIL sysadmin@mysociety.org
+ENV DEBFULLNAME mySociety
+ENV SOURCE_VERSION 0.10
+
+RUN apt-get update && \
+      apt-get install -y \
+        build-essential \
+        dh-make-perl \
+        swig \
+        wget
+
+RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
+WORKDIR /home/builder
+USER builder
+RUN wget -q https://github.com/mysociety/String-Ediff/archive/v${SOURCE_VERSION}.tar.gz \
+      -O libstring-ediff-perl_${SOURCE_VERSION}.orig.tar.gz && \
+      tar xf libstring-ediff-perl_${SOURCE_VERSION}.orig.tar.gz
+
+WORKDIR /home/builder/String-Ediff-${SOURCE_VERSION}
+RUN dh-make-perl && dpkg-buildpackage
+
+WORKDIR /home/builder
+CMD ["sh", "-c", "/bin/mv libstring-ediff-perl*_${SOURCE_VERSION}-1* ./deb/buster"]

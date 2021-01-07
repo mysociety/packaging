@@ -1,14 +1,17 @@
-.PHONY: build clean
+.PHONY: all stretch buster
 
-all: clean build
+all: stretch buster
 
-build:
-	@echo "==> Building image..."
-	docker build -t string-ediff-builder:latest .
-	@echo "==> Extracting build artefacts..."
-	docker run --rm -v ${PWD}/deb:/deb string-ediff-builder:latest
+stretch:
+	@echo "==> Building Stretch..."
+	@./build.sh stretch
+
+buster:
+	@echo "==> Building Buster..."
+	@./build.sh buster
+
 clean:
-	@echo "==> Removing any old artefacts..."
-	rm deb/* || echo "==> No artefacts found."
-	@echo "==> Removing any old Docker images..."
-	docker image rm string-ediff-builder || echo "==> No images found."
+	@echo "==> Removing old artefacts..."
+	@rm -fr deb/* || echo "==> No artefacts found."
+	@echo "==> Removing old Docker images..."
+	@docker image rm $(shell basename $(shell pwd))-builder 2>/dev/null || echo "==> No images found."
