@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:stretch
 LABEL maintainer="sysadmin@mysociety.org"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -12,14 +12,15 @@ RUN apt-get update && \
         wget \
         libheap-perl
 
-RUN mkdir /build
-WORKDIR /build
-RUN wget https://cpan.metacpan.org/authors/id/F/FW/FWOJCIK/Heap-Priority-0.11.tar.gz && \
+RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
+WORKDIR /home/builder
+USER builder
+RUN wget -q https://cpan.metacpan.org/authors/id/F/FW/FWOJCIK/Heap-Priority-0.11.tar.gz && \
       tar xvf Heap-Priority-0.11.tar.gz
-WORKDIR /build/Heap-Priority-0.11
+WORKDIR /home/builder/Heap-Priority-0.11
 RUN dh-make-perl && \
       sed -i -e 's/defined(@/(@/g' t/complete.t && \
       sed -i '/use vars/a use AutoLoader;' Priority.pm && \
       dpkg-buildpackage -b
-WORKDIR /build
-CMD ["sh", "-c", "/bin/mv libheap-priority-perl*.deb /deb"]
+WORKDIR /home/builder
+CMD ["sh", "-c", "/bin/mv libheap-priority-perl*.deb ./deb/stretch/"]
