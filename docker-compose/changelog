@@ -1,3 +1,10 @@
+docker-compose (1.27.4-ms1) experimental; urgency=medium
+
+  * Package created with FPM
+  * See https://github.com/docker/compose/releases/tag/1.27.4
+
+ -- mySociety <sysadmin@mysociety.org>  Thurs, 15 Oct 2020 15:23:16 +0100
+
 docker-compose (1.23.2-ms1) experimental; urgency=medium
 
   * Package created with FPM
@@ -12,4 +19,4 @@ docker-compose (1.22.0-ms1) experimental; urgency=medium
 
  -- mySociety <sysadmin@mysociety.org>  Thurs, 25 Oct 2018 15:06::07 +0100
 
-	
+

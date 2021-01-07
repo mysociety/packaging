@@ -3,7 +3,7 @@
 source ../global.vars
 mkdir {deb,source} 2>/dev/null
 
-VERSION=${VERSION:-"1.22.0"}
+VERSION=${VERSION:-"1.27.4"}
 ITERATION=${ITERATION:-"ms1"}
 SOURCE=https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-Linux-x86_64
 DEB=docker-compose_${VERSION}-${ITERATION}_amd64.deb
