@@ -1,0 +1,9 @@
+---
+distros:
+  debian:
+    - stretch
+    - buster
+  ubuntu:
+    - xenial
+    - bionic
+    - focal
