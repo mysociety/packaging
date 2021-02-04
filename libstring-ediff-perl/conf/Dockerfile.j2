@@ -1,10 +1,10 @@
-FROM debian:stretch
-LABEL maintainer="sysadmin@mysociety.org"
+FROM {{ distro }}:{{ codename }}
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV DEBEMAIL sysadmin@mysociety.org
-ENV DEBFULLNAME mySociety
-ENV SOURCE_VERSION 0.10
+ENV DEBEMAIL {{ vendor_email }}
+ENV DEBFULLNAME {{ vendor }}
+ENV SOURCE_VERSION {{ source_version }}
 
 RUN apt-get update && \
       apt-get install -y \
@@ -16,6 +16,10 @@ RUN apt-get update && \
 RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
 WORKDIR /home/builder
 USER builder
+{% if codename == "xenial" %}
+RUN git config --global user.email "{{ vendor_email }}" \
+      && git config --global user.name "{{ vendor }}"
+{% endif %}
 RUN wget -q https://github.com/mysociety/String-Ediff/archive/v${SOURCE_VERSION}.tar.gz \
       -O libstring-ediff-perl_${SOURCE_VERSION}.orig.tar.gz && \
       tar xf libstring-ediff-perl_${SOURCE_VERSION}.orig.tar.gz
@@ -24,4 +28,4 @@ WORKDIR /home/builder/String-Ediff-${SOURCE_VERSION}
 RUN dh-make-perl && dpkg-buildpackage
 
 WORKDIR /home/builder
-CMD ["sh", "-c", "/bin/mv libstring-ediff-perl*_${SOURCE_VERSION}-1* ./deb/stretch"]
+CMD ["sh", "-c", "/bin/mv libstring-ediff-perl*_${SOURCE_VERSION}-1* ./deb/{{ codename }}"]

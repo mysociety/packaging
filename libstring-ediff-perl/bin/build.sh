@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DIST=${1:-buster}
+cd "$(dirname "$0")/.."
 SOFTWARE=$(basename $(pwd))
 
 echo "==> Building docker image..."
