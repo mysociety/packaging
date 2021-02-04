@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# removes symlinks from /usr/local/bin
+#
+
+rm -f /usr/local/bin/measure-vhost-use
+rm -f /usr/local/bin/memshot
+rm -f /usr/local/bin/mugly
+rm -f /usr/local/bin/mysociety-create-databases
+rm -f /usr/local/bin/mysociety
+rm -f /usr/local/bin/psql-activity
+rm -f /usr/local/bin/psql-in-core
+rm -f /usr/local/bin/retrieve_from_backup

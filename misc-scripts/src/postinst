@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Add symlink to /usr/local/bin
+#
+
+ln -s /data/mysociety/bin/measure-vhost-use /usr/local/bin/measure-vhost-use
+ln -s /data/mysociety/bin/memshot /usr/local/bin/memshot
+ln -s /data/mysociety/bin/mugly /usr/local/bin/mugly
+ln -s /data/mysociety/bin/mysociety-create-databases /usr/local/bin/mysociety-create-databases
+ln -s /data/mysociety/bin/mysociety /usr/local/bin/mysociety
+ln -s /data/mysociety/bin/psql-activity  /usr/local/bin/psql-activity
+ln -s /data/mysociety/bin/psql-in-core /usr/local/bin/psql-in-core
+ln -s /data/mysociety/bin/retrieve_from_backup /usr/local/bin/retrieve_from_backup

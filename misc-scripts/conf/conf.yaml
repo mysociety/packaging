@@ -1,0 +1,9 @@
+---
+iteration: ms1
+version: 1.0.0
+dependencies:
+  - libfindbin-libs-perl
+  - liberror-perl
+suggests:
+  - nodejs
+  - node-jshint
