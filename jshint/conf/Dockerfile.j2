@@ -1,5 +1,5 @@
 FROM {{ distro }}:{{ codename }}
-LABEL maintainer="sysadmin@mysociety.org"
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -19,8 +19,8 @@ RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
 WORKDIR /home/builder
 USER builder
 RUN fpm -s npm -t deb \
-      --vendor "mySociety" \
-      --maintainer "mySociety <sysadmin@mysociety.org>" \
+      --vendor "{{ vendor }}" \
+      --maintainer "{{ vendor }} <{{ vendor_email }}>" \
       --license "MIT" \
 {% for dependency in dependencies %}
       --depends "{{ dependency }}" \
