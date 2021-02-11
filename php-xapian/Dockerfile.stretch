@@ -1,10 +1,11 @@
 FROM debian:stretch
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV XAPIAN_VERSION 1.4.11
-ARG SOURCE_URL=https://snapshot.debian.org/archive/debian/20190625T042133Z/pool/main/x/xapian-bindings/
+ENV XAPIAN_VERSION 1.4.18
+#ARG SOURCE_URL=https://snapshot.debian.org/archive/debian/20190625T042133Z/pool/main/x/xapian-bindings/
+ARG SOURCE_URL=http://deb.debian.org/debian/pool/main/x/xapian-bindings/
 
-COPY sources.list /etc/apt/sources.list
+COPY sources.list.stretch /etc/apt/sources.list
 
 RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
 
@@ -18,20 +19,24 @@ RUN apt-get -qq update \
         php7.0-cli \
         wget \
       && apt-get -t stretch-backports install -y \
-        libxapian-dev
+        debhelper
+
+RUN mkdir /root/debs
+COPY ./src/stretch/* /root/debs/
+RUN dpkg -i -R /root/debs && rm -fr /root/debs
 
 WORKDIR /home/builder
 USER builder 
 
 # Get the sources
-RUN wget ${SOURCE_URL}/xapian-bindings_1.4.11.orig.tar.xz \
-      && wget ${SOURCE_URL}/xapian-bindings_1.4.11-2.debian.tar.xz \
-      && wget ${SOURCE_URL}/xapian-bindings_1.4.11-2.dsc \
-      && tar xJf xapian-bindings_1.4.11.orig.tar.xz \
-      && tar xJf xapian-bindings_1.4.11-2.debian.tar.xz -C xapian-bindings-1.4.11
+RUN wget ${SOURCE_URL}/xapian-bindings_1.4.18.orig.tar.xz \
+      && wget ${SOURCE_URL}/xapian-bindings_1.4.18-1.debian.tar.xz \
+      && wget ${SOURCE_URL}/xapian-bindings_1.4.18-1.dsc \
+      && tar xJf xapian-bindings_1.4.18.orig.tar.xz \
+      && tar xJf xapian-bindings_1.4.18-1.debian.tar.xz -C xapian-bindings-1.4.18
 
 # Setup
-RUN cd xapian-bindings-1.4.11 \
+RUN cd xapian-bindings-1.4.18 \
       && echo php7 > debian/bindings-to-package \
       && ./debian/rules maint PHP7_VERSIONS=7.0
 
