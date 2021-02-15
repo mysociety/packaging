@@ -1,4 +1,5 @@
 ---
 vendor: mySociety
 vendor_email: 'sysadmin@mysociety.org'
-
+skip_codenames: []
+shared_package: false

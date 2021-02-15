@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -z "$1" ] ; then
+    echo "Usage: $0 package-name"
+    exit 1
+fi
+
+if [ -d "packages/$1" ] ; then
+    echo "Build already exists - perhaps you meant to run update-build instead?"
+    exit 2
+fi
+
+mkdir -p "packages/$1"
+cp -r template/* "packages/$1"
+mv "packages/$1/conf/gitignore" "packages/$1/.gitignore"
