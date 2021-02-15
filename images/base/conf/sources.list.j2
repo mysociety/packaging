@@ -1,0 +1,35 @@
+{% if distro == "debian" %}
+deb http://deb.debian.org/debian {{ codename }} main
+deb-src http://deb.debian.org/debian {{ codename }} main
+deb http://security.debian.org/debian-security {{ codename }}/updates main
+deb-src http://security.debian.org/debian-security {{ codename }}/updates main
+deb http://deb.debian.org/debian {{ codename }}-updates main
+deb-src http://deb.debian.org/debian {{ codename }}-updates main
+deb http://mirror.bytemark.co.uk/debian {{ codename }}-backports main
+{% else %}
+deb http://archive.ubuntu.com/ubuntu/ {{ codename }} main restricted
+deb-src http://archive.ubuntu.com/ubuntu/ {{ codename }} main restricted
+
+deb http://archive.ubuntu.com/ubuntu/ {{ codename }}-updates main restricted
+deb-src http://archive.ubuntu.com/ubuntu/ {{ codename }}-updates main restricted
+
+deb http://archive.ubuntu.com/ubuntu/ {{ codename }} universe
+deb-src http://archive.ubuntu.com/ubuntu/ {{ codename }} universe
+deb http://archive.ubuntu.com/ubuntu/ {{ codename }}-updates universe
+deb-src http://archive.ubuntu.com/ubuntu/ {{ codename }}-updates universe
+
+deb http://archive.ubuntu.com/ubuntu/ {{ codename }} multiverse
+deb-src http://archive.ubuntu.com/ubuntu/ {{ codename }} multiverse
+deb http://archive.ubuntu.com/ubuntu/ {{ codename }}-updates multiverse
+deb-src http://archive.ubuntu.com/ubuntu/ {{ codename }}-updates multiverse
+
+deb http://archive.ubuntu.com/ubuntu/ {{ codename }}-backports main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu/ {{ codename }}-backports main restricted universe multiverse
+
+deb http://security.ubuntu.com/ubuntu/ {{ codename }}-security main restricted
+deb-src http://security.ubuntu.com/ubuntu/ {{ codename }}-security main restricted
+deb http://security.ubuntu.com/ubuntu/ {{ codename }}-security universe
+deb-src http://security.ubuntu.com/ubuntu/ {{ codename }}-security universe
+deb http://security.ubuntu.com/ubuntu/ {{ codename }}-security multiverse
+deb-src http://security.ubuntu.com/ubuntu/ {{ codename }}-security multiverse
+{% endif %}
