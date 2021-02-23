@@ -1,10 +1,5 @@
-FROM {{ distro }}:{{ codename }}
+FROM base-builder:{{ codename }}-latest
 LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
-
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update -qq && \
-      apt-get install -qq build-essential curl git libffi-dev ruby-dev apt-transport-https lsb-release >/dev/null
 
 RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 
@@ -13,9 +8,6 @@ RUN echo 'deb https://deb.nodesource.com/node_14.x {{ codename }} main' > /etc/a
 
 RUN apt-get update -qq && apt-get install -qq nodejs >/dev/null
 
-RUN gem install --no-document fpm
-
-RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
 WORKDIR /home/builder
 USER builder
 RUN fpm -s npm -t deb \
