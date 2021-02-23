@@ -1,0 +1,26 @@
+FROM base-builder:buster-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+ARG SOURCE_URL="https://github.com/docker/compose/releases/download/{{ version }}/docker-compose-Linux-x86_64"
+
+USER builder
+WORKDIR /home/builder
+
+COPY ./files/* ./
+RUN wget -q $SOURCE_URL -O docker-compose \
+      && chmod +x docker-compose \
+      && fpm -s dir -t deb \
+        --vendor "{{ vendor }}" \
+        --maintainer "{{ vendor }} <{{ vendor_email }}>" \
+        --version "{{ version }}" \
+        --iteration "{{ iteration }}" \
+        --license 'Apache-2.0' \
+        --description "Punctual, lightweight development environments using Docker docker-compose is a service management software built on top of docker. Define your services and their relationships in a simple YAML file, and let compose handle the rest." \
+        --url "https://docs.docker.com/compose/" \
+        --deb-changelog changelog \
+        --after-install postinst \
+        --after-remove postrm \
+        -n "docker-compose" \
+        ./docker-compose=/opt/docker/bin/docker-compose
+
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/all"]
