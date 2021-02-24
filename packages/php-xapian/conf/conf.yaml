@@ -1,0 +1,12 @@
+---
+iteration: 1
+version: 1.4.18
+source_url: 'http://deb.debian.org/debian/pool/main/x/xapian-bindings/'
+php_versions:
+  stretch: 7.0
+  buster: 7.3
+  bionic: 7.2
+  xenial: 7.0
+  focal: 7.4
+skip_codenames:
+  - xenial

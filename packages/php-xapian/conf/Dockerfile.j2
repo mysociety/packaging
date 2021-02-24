@@ -1,0 +1,43 @@
+FROM base-builder:{{ codename }}-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+ARG SOURCE_URL={{ source_url }}
+
+RUN apt-get -qq update \
+      && apt-get install -qq \
+         php{{ php_versions[codename] }}-dev \
+         php{{ php_versions[codename] }}-cli \
+{% if codename == "buster" or codename == "focal" %}
+         debhelper \
+{% else %}
+      && apt-get install -qq -t {{ codename }}-backports debhelper \
+{% endif %}
+{% if codename == "buster" %}
+      && apt-get install -qq -t buster-backports libxapian-dev libxapian30 xapian-tools \
+{% endif %}
+      && rm -fr /var/lib/apt/lists/*
+
+{% if codename != "buster" %}
+RUN mkdir /root/debs
+COPY ./src/{{ codename }}/* /root/debs/
+RUN dpkg -i -R /root/debs && rm -fr /root/debs
+{% endif %}
+
+WORKDIR /home/builder
+USER builder
+
+# Get the sources
+RUN wget -q ${SOURCE_URL}/xapian-bindings_{{ version }}.orig.tar.xz \
+      && wget -q ${SOURCE_URL}/xapian-bindings_{{ version }}-{{ iteration }}.debian.tar.xz \
+      && wget -q ${SOURCE_URL}/xapian-bindings_{{ version }}-{{ iteration }}.dsc \
+      && tar xJf xapian-bindings_{{ version }}.orig.tar.xz \
+      && tar xJf xapian-bindings_{{ version }}-{{ iteration }}.debian.tar.xz -C xapian-bindings-{{ version }}
+
+# Setup
+WORKDIR xapian-bindings-{{ version }}
+RUN echo php7 > debian/bindings-to-package \
+      && ./debian/rules maint PHP7_VERSIONS={{ php_versions[codename] }} \
+      && debuild -us -uc
+
+WORKDIR /home/builder
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]

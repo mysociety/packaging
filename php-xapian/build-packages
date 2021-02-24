@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-cd xapian-bindings-${XAPIAN_VERSION}
-debuild -us -uc
-cd ..
-mv *.deb deb/$(lsb_release -cs)/
