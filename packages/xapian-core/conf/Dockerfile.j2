@@ -1,0 +1,32 @@
+FROM base-builder:{{ codename }}-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+ARG SOURCE_URL=http://deb.debian.org/debian/pool/main/x/xapian-core
+
+RUN apt-get -qq update \
+      && apt-get install -qq \
+        fakeroot \
+        uuid-dev \
+        zlib1g-dev \
+{% if codename == "buster" or codename == "focal" %}
+        debhelper \
+{% else %}
+      && apt-get install -qq -t {{ codename }}-backports debhelper \
+{% endif %}
+      && rm -fr /var/lib/apt/lists/*
+
+USER builder
+
+WORKDIR /home/builder
+RUN wget -q ${SOURCE_URL}/xapian-core_{{ version }}-{{ iteration }}.debian.tar.xz \
+      && wget -q ${SOURCE_URL}/xapian-core_{{ version }}-{{ iteration }}.dsc \
+      && wget -q ${SOURCE_URL}/xapian-core_{{ version }}.orig.tar.xz \
+      && tar xJf xapian-core_{{ version }}.orig.tar.xz \
+      && tar xJf xapian-core_{{ version }}-{{ iteration }}.debian.tar.xz -C xapian-core-{{ version }}
+
+WORKDIR /home/builder/xapian-core-{{ version }}
+RUN debuild -us -uc
+
+WORKDIR /home/builder
+
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]
