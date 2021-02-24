@@ -1,0 +1,22 @@
+FROM base-builder:buster-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+WORKDIR /home/builder
+USER builder
+
+RUN git clone https://github.com/mysociety/check_lsi_raid.git \
+      && fpm -s dir -t deb \
+           --vendor "{{ vendor }}" \
+           --maintainer "{{ vendor }} <{{ vendor_email }}>" \
+           --version "{{ version }}" \
+           --iteration "{{ iteration }}" \
+           --architecture "all" \
+           --license "GPL-3.0" \
+           --description "Nagios/Icinga plugin to check LSI RAID Controllers" \
+           --url "https://www.thomas-krenn.com/en/wiki/LSI_RAID_Monitoring_Plugin" \
+           -d libfile-which-perl \
+           -d monitoring-plugins \
+           -n "monitoring-plugins-lsi-raid" \
+           ./check_lsi_raid/check_lsi_raid=/usr/lib/nagios/plugins/check_lsi_raid
+
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/all"]
