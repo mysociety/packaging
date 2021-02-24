@@ -1,0 +1,28 @@
+FROM base-builder:{{ codename }}-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+ENV VERSION={{ version }}
+ENV ITERATION={{ iteration }}
+
+RUN apt-get -qq update \
+      && apt-get install -qq \
+           debhelper \
+           libdigest-hmac-perl \
+           libmldbm-perl \
+           libtest-pod-coverage-perl \
+           libtest-pod-perl
+
+USER builder
+WORKDIR /home/builder
+
+RUN apt-get source srs
+COPY ./src/srsd ./libmail-srs-perl-{{ version }}/srsd
+
+COPY ./bin/update-changelog .
+RUN ./update-changelog
+
+WORKDIR libmail-srs-perl-{{ version }}
+RUN dpkg-buildpackage -b {% if codename != "xenial" %} --no-sign {% endif %}
+
+WORKDIR /home/builder
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]

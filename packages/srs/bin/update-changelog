@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+cat >/tmp/changelog <<EOF
+libmail-srs-perl ($( head -1 libmail-srs-perl-${VERSION}/debian/changelog | awk '{ print $2 }' | sed -e s/\[\(\)\]//g)+${ITERATION}) unstable; urgency=low
+
+  * Add "socketfile" option to /usr/bin/srsd to permit overriding the
+    default location for the socket used by the daemon process.
+ -- mySociety <sysadmin@mysociety.org>  $(date -R)
+
+EOF
+
+cat libmail-srs-perl-${VERSION}/debian/changelog >> /tmp/changelog
+mv /tmp/changelog libmail-srs-perl-${VERSION}/debian/changelog
