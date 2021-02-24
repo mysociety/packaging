@@ -1,4 +1,4 @@
-FROM {{ distro }}:{{ codename }}
+FROM base-builder:{{ codename }}-latest
 LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -8,12 +8,9 @@ ENV SOURCE_VERSION {{ source_version }}
 
 RUN apt-get update && \
       apt-get install -y \
-        build-essential \
         dh-make-perl \
-        swig \
-        wget
+        swig
 
-RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
 WORKDIR /home/builder
 USER builder
 {% if codename == "xenial" %}
@@ -28,4 +25,4 @@ WORKDIR /home/builder/String-Ediff-${SOURCE_VERSION}
 RUN dh-make-perl && dpkg-buildpackage
 
 WORKDIR /home/builder
-CMD ["sh", "-c", "/bin/mv libstring-ediff-perl*_${SOURCE_VERSION}-1* ./deb/{{ codename }}"]
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]
