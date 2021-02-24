@@ -1,0 +1,24 @@
+FROM base-builder:{{ codename }}-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+ENV DEBEMAIL {{ vendor_email }}
+ENV DEBFULLNAME {{ vendor }}
+
+RUN apt-get update && \
+      apt-get install -y \
+        dh-make-perl
+
+USER builder
+{% if codename == "xenial" %}
+RUN git config --global user.email "{{ vendor_email }}" \
+      && git config --global user.name "{{ vendor }}"
+{% endif %}
+
+WORKDIR /home/builder
+RUN dh-make-perl --cpan Crypt::Idea
+
+WORKDIR /home/builder/libcrypt-idea-perl
+RUN dpkg-buildpackage
+
+WORKDIR /home/builder
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]
