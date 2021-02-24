@@ -19,3 +19,5 @@ RUN apt-get update -qq \
 
 RUN gem install --no-document fpm
 RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
+COPY ./files/MyConfig.pm /home/builder/.cpan/CPAN/
+RUN chown -R builder:builder /home/builder/
