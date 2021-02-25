@@ -3,6 +3,10 @@
 cd "$(dirname "$0")/.."
 
 for codename in stretch bionic focal ; do
-  mkdir -p src/${codename}
-  cp ../xapian-core/deb/${codename}/* src/${codename}
+    mkdir -p src/${codename}
+    if [ -d ../xapian-core/deb/${codename}/ ] ; then
+        cp ../xapian-core/deb/${codename}/* src/${codename}
+    else
+        echo "==> [php-xapian] Warning: no xapian-core packages found locally for ${codename}."
+    fi
 done

@@ -2,4 +2,5 @@
 
 [ -f ../../.venv/packaging/bin/activate ] && source ../../.venv/packaging/bin/activate
 
+./bin/get-sources
 ./bin/configure.py
