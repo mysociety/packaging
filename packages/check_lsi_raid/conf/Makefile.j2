@@ -16,6 +16,8 @@ all: {{ codenames | join(' ') }}
 
 {% endfor %}
 {% endif %}
+
+.PHONEY: clean-deb clean-images clean-config clean
 clean-deb:
 	@echo "==> Removing old artefacts..."
 	@rm -fr deb/* || echo "==> No artefacts found."
@@ -24,5 +26,9 @@ clean-images:
 	@echo "==> Removing old Docker images..."
 	@docker image ls -q $(shell basename $(shell pwd))-builder | xargs docker rmi -f 2>/dev/null || echo "==> No images found."
 
-clean: clean-deb clean-images
+clean-config:
+	@echo "==> Cleaning up locally generated config..."
+	@rm -f Dockerfile*
+	@rm -f Makefile
 
+clean: clean-deb clean-images clean-config
