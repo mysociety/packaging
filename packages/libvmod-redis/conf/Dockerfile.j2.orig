@@ -1,0 +1,13 @@
+FROM base-builder:{{ codename }}-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# Setup
+
+WORKDIR /home/builder
+USER builder
+
+# build
+
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]

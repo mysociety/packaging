@@ -1,0 +1,51 @@
+FROM base-builder:{{ codename }}-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+ENV VARNISHAPI_VMODDIR=/usr/lib/x86_64-linux-gnu/varnish/vmods/
+
+RUN apt-get update -qq \
+      && apt-get install -y -qq \
+         autotools-dev \
+         automake \
+         debhelper \
+         graphviz \
+         libedit-dev \
+         libeditline-dev \
+         libev-dev \
+         libhiredis-dev \
+         libjemalloc-dev \
+         libncurses-dev \
+         libpcre3-dev \
+         libtool \
+         libvarnishapi-dev \
+         pkg-config \
+         python-docutils \
+{% if codename == "focal" %}
+         python3-sphinx \
+{% else %}
+         python-sphinx \
+{% endif %}
+         varnish \
+       && rm -fr /var/lib/apt/lists/*
+
+USER builder
+
+WORKDIR /home/builder
+{% if codename == "stretch" %}
+RUN git clone https://github.com/sagepe/libvmod-redis.git
+{% else %}
+RUN git clone https://github.com/carlosabalde/libvmod-redis.git
+{% endif %}
+
+WORKDIR /home/builder/libvmod-redis
+
+{% if codename == "stretch" %}
+RUN git checkout origin/stretch \
+{% else %}
+RUN git checkout origin/{{ varnish_version[codename] }}-archived \
+{% endif %}
+      && ./autogen.sh \
+      && debuild -e VARNISHAPI_VMODDIR --no-tgz-check -us -uc 
+
+WORKDIR /home/builder  
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]

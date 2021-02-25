@@ -1,0 +1,8 @@
+---
+iteration: ms1
+skip_codenames:
+  - xenial
+varnish_version:
+  buster: 6.1
+  bionic: 5.2
+  focal: 6.2
