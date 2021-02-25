@@ -42,7 +42,8 @@ you want, and while testing the integration of a new target system.
 ## How it works
 
 The builds are completed in Docker containers and the Debian packages
-created using [`fpm`](https://github.com/jordansissel/fpm).
+created using [`fpm`](https://github.com/jordansissel/fpm) or the native
+Debian tools where possible.
 
 The `images/` directory contains configuration for the base images that
 contain development tools, etc, needed for most of the package builds.
