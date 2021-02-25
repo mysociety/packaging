@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# script/setup: Set up application for the first time after cloning, or set it
+#               back to the initial first unused state.
+#
+# Use with care, as this will remove:
+#  - all locally-generated configuration files
+#  - all Debian package files
+#  - all Docker images
+#
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "==> Cleaning up images..."
+cd images
+for dir in * ; do
+    cd $dir
+    [ -f Makefile ] && make clean
+    cd ..
+done
+cd ..
+
+echo "==> Cleaning up packages..."
+cd packages
+for dir in * ; do
+    cd $dir
+    [ -f Makefile ] && make clean
+    cd ..
+done
+cd ..
+
+script/update

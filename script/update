@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+script/bootstrap
+
+echo "==> Updating helper scripts..."
+./bin/update-image --all
+./bin/update-build --all
+
+echo "==> Configuring image builds..."
+cd images
+for dir in * ; do
+    cd $dir
+    ./configure
+    cd ..
+done
+
+echo "==> Configuring package builds..."
+cd ../packages
+for dir in * ; do
+    cd $dir
+    ./configure
+    cd ..
+done
+
+cd ..
