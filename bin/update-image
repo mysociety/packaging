@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -z "$1" ] ; then
+    echo "Usage: $0 image-name | --all"
+    exit 1
+fi
+
+if [ "$1" == "--all" ] ; then
+    cd images
+    for dir in * ; do
+        echo "==> Updating ${dir}..."
+        cp ../template/bin/* "${dir}/bin/"
+    done
+elif [ ! -d "images/${1}" ] ; then
+    echo "Build doesn't exist - perhaps you meant to run setup-image instead?"
+    exit 2
+else
+    echo "==> Updating ${1}..."
+    cp template/bin/* "images/${1}/bin/"
+fi
