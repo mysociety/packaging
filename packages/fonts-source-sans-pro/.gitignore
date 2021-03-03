@@ -2,4 +2,8 @@
 /Makefile
 bin/build.sh
 bin/configure.py
-/fonts-source-sans-pro/*
+/fonts-source-sans-pro/*.ttf
+/fonts-source-sans-pro/debian/files
+/fonts-source-sans-pro/debian/debhelper-build-stamp
+/fonts-source-sans-pro/debian/fonts-source-sans-pro.substvars
+/fonts-source-sans-pro/debian/fonts-source-sans-pro/

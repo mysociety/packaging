@@ -30,6 +30,6 @@ clean-config:
 	@echo "==> Cleaning up locally generated config..."
 	@rm -f Dockerfile*
 	@rm -f Makefile
-	@rm -fr fonts-source-sans-pro
+	@rm -fr fonts-source-sans-pro/*.ttf
 
 clean: clean-deb clean-images clean-config

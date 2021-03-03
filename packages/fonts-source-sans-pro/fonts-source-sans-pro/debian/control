@@ -1,0 +1,17 @@
+Source: fonts-source-sans-pro
+Section: fonts
+Priority: optional
+Maintainer: mySociety <sysadmin@mysociety.org>
+Uploaders: Matthew Somerville <matthew@mysociety.org>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: fonts-source-sans-pro
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Description: Source Sans Pro free TrueType font
+ Source Sans Pro is a sans serif typeface created by Paul D. Hunt for Adobe. It
+ is the first open-source font family from Adobe, distributed under the SIL
+ Open Font License.
+
