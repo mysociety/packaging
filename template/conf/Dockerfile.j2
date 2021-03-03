@@ -1,11 +1,16 @@
 FROM base-builder:{{ codename }}-latest
 LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
 
-# Setup
+# Setup anything here that needs root, e.g. package installs, new repos, etc.
 
 WORKDIR /home/builder
 USER builder
 
-# build
+# build instructions
 
+# When building with `shared_package: true`:
+# CMD ["sh", "-c", "/bin/mv *.deb ./deb/all"]
+
+# When doing fully targetted builds:
 CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]
+
