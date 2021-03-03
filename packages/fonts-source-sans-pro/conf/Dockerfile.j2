@@ -1,0 +1,14 @@
+FROM base-builder:buster-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+WORKDIR /home/builder
+COPY ./fonts-source-sans-pro ./fonts-source-sans-pro/
+RUN chown -R builder:builder ./fonts-source-sans-pro/
+
+USER builder
+
+WORKDIR /home/builder/fonts-source-sans-pro
+RUN debuild -i -us -uc -b
+
+WORKDIR /home/builder
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/all"]
