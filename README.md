@@ -107,6 +107,10 @@ directory with the basic files.
 You'll then need to edit the templates and configuration until you have
 something that works, then you can commit the new config.
 
+You can add anything you need here, including files or directories to
+include in the build (e.g. a `debian` directory for a fully-conformant
+package), any extra helper scripts, etc.
+
 #### Excluding a particular target system
 
 Although the global `distributions.yaml` file contains all the Debian
