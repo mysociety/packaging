@@ -8,11 +8,6 @@ RUN apt-get -qq update \
         fakeroot \
         uuid-dev \
         zlib1g-dev \
-{% if codename == "buster" or codename == "focal" %}
-        debhelper \
-{% else %}
-      && apt-get install -qq -t {{ codename }}-backports debhelper \
-{% endif %}
       && rm -fr /var/lib/apt/lists/*
 
 USER builder

@@ -16,6 +16,7 @@ RUN apt-get update -qq \
           ruby-dev \
           wget \
         --no-install-recommends > /dev/null \
+      && apt-get install -qq {% if codename != "buster" and codename != "focal" %} -t {{ codename }}-backports {% endif %} debhelper \
       && rm -r /var/lib/apt/lists/*
 
 RUN gem install --no-document fpm

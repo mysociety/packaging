@@ -7,11 +7,6 @@ RUN apt-get -qq update \
       && apt-get install -qq \
          php{{ php_versions[codename] }}-dev \
          php{{ php_versions[codename] }}-cli \
-{% if codename == "buster" or codename == "focal" %}
-         debhelper \
-{% else %}
-      && apt-get install -qq -t {{ codename }}-backports debhelper \
-{% endif %}
 {% if codename == "buster" %}
       && apt-get install -qq -t buster-backports libxapian-dev libxapian30 xapian-tools \
 {% endif %}
