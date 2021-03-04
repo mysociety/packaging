@@ -1,0 +1,26 @@
+FROM base-builder:{{ codename }}-latest
+LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
+
+ENV DEBEMAIL {{ vendor_email }}
+ENV DEBFULLNAME {{ vendor }}
+
+RUN apt-get update -qq && \
+      apt-get install -qq \
+        dh-make-perl \
+      && rm -fr /var/lib/apt/lists/*
+
+USER builder
+{% if codename == "xenial" %}
+RUN git config --global user.email "{{ vendor_email }}" \
+      && git config --global user.name "{{ vendor }}"
+{% endif %}
+
+WORKDIR /home/builder
+RUN wget -q {{ source_url }}/Geo-ShapeFile-{{ version }}.tar.gz \
+      && tar xf Geo-ShapeFile-{{ version }}.tar.gz
+
+WORKDIR /home/builder/Geo-ShapeFile-{{ version }}
+RUN dh-make-perl && dpkg-buildpackage
+
+WORKDIR /home/builder
+CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]
