@@ -9,6 +9,7 @@ COPY files/postinst .
 COPY files/postrm .
 
 WORKDIR /home/builder/misc-scripts
+RUN git checkout {{ version }}
 RUN ["/bin/bash", "-c", "rm -fr {.git*,cpan,rotatelogs,run-with-lockfile,package*}"]
 RUN fpm -s dir -t deb \
       --vendor "{{ vendor }}" \
