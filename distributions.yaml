@@ -3,6 +3,7 @@ distros:
   debian:
     - stretch
     - buster
+    - bullseye
   ubuntu:
     - xenial
     - bionic
