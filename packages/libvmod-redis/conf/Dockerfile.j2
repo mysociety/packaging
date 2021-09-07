@@ -32,7 +32,7 @@ USER builder
 
 WORKDIR /home/builder
 {% if codename == "stretch" or codename == "bullseye" %}
-RUN git clone https://github.com/sagepe/libvmod-redis.git
+RUN git clone https://github.com/mysociety/libvmod-redis.git
 {% else %}
 RUN git clone https://github.com/carlosabalde/libvmod-redis.git
 {% endif %}
