@@ -3,6 +3,7 @@ iteration: 1
 version: 1.4.18
 source_url: 'http://deb.debian.org/debian/pool/main/x/xapian-bindings/'
 php_versions:
+  bullseye: 7.4
   stretch: 7.0
   buster: 7.3
   bionic: 7.2

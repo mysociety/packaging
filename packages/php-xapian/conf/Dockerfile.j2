@@ -9,10 +9,12 @@ RUN apt-get -qq update \
          php{{ php_versions[codename] }}-cli \
 {% if codename == "buster" %}
       && apt-get install -qq -t buster-backports libxapian-dev libxapian30 xapian-tools \
+{% elif codename == "bullseye" %}
+      && apt-get install -qq libxapian-dev libxapian30 xapian-tools \
 {% endif %}
       && rm -fr /var/lib/apt/lists/*
 
-{% if codename != "buster" %}
+{% if codename != "buster" and codename != "bullseye" %}
 RUN mkdir /root/debs
 COPY ./src/{{ codename }}/* /root/debs/
 RUN dpkg -i -R /root/debs && rm -fr /root/debs
