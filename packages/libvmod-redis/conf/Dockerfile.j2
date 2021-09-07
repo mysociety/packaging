@@ -9,7 +9,6 @@ RUN apt-get update -qq \
          automake \
          graphviz \
          libedit-dev \
-         libeditline-dev \
          libev-dev \
          libhiredis-dev \
          libjemalloc-dev \
@@ -18,19 +17,21 @@ RUN apt-get update -qq \
          libtool \
          libvarnishapi-dev \
          pkg-config \
-         python-docutils \
-{% if codename == "focal" %}
+{% if codename != "bionic" and codename != "stretch" and codename != "buster" %}
+         python3-docutils \
          python3-sphinx \
 {% else %}
+         python-docutils \
          python-sphinx \
 {% endif %}
+         redis-server \
          varnish \
        && rm -fr /var/lib/apt/lists/*
 
 USER builder
 
 WORKDIR /home/builder
-{% if codename == "stretch" %}
+{% if codename == "stretch" or codename == "bullseye" %}
 RUN git clone https://github.com/sagepe/libvmod-redis.git
 {% else %}
 RUN git clone https://github.com/carlosabalde/libvmod-redis.git
@@ -38,8 +39,8 @@ RUN git clone https://github.com/carlosabalde/libvmod-redis.git
 
 WORKDIR /home/builder/libvmod-redis
 
-{% if codename == "stretch" %}
-RUN git checkout origin/stretch \
+{% if codename == "stretch" or codename == "bullseye" %}
+RUN git checkout origin/{{ codename }} \
 {% else %}
 RUN git checkout origin/{{ varnish_version[codename] }}-archived \
 {% endif %}
