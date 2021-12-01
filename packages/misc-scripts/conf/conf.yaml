@@ -1,10 +1,18 @@
 ---
 iteration: ms1
-version: 1.8.0
+version: 1.10.0
 shared_package: true
 dependencies:
-  - libfindbin-libs-perl
+  - libcache-memcached-perl
+  - libcrypt-x509-perl
+  - libdbd-pg-perl
   - liberror-perl
+  - libfile-copy-recursive-perl
+  - libfile-slurp-perl
+  - libfindbin-libs-perl
+  - libjson-perl
+  - libyaml-perl
+
 suggests:
   - nodejs
   - node-jshint
