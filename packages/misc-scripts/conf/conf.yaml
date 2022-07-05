@@ -1,6 +1,6 @@
 ---
 iteration: ms1
-version: 1.11.0
+version: 1.16.0
 shared_package: true
 dependencies:
   - libcache-memcached-perl
@@ -11,6 +11,8 @@ dependencies:
   - libfile-slurp-perl
   - libfindbin-libs-perl
   - libjson-perl
+  - libnet-dns-zonefile-fast-perl
+  - libunix-mknod-perl
   - libyaml-perl
 
 suggests:
