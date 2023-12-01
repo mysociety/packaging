@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ -f ../../.venv/packaging/bin/activate ] && source ../../.venv/packaging/bin/activate
+[ -f ../../.venv/packaging/bin/activate ] && . ../../.venv/packaging/bin/activate
 
 ./bin/configure.py
 

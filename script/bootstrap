@@ -23,8 +23,8 @@ fi
 VIRTUALENV=".venv/packaging"
 if [ ! -f "${VIRTUALENV}/bin/activate" ] ; then
     echo "==> Setting up virtualenv at ${VIRTUALENV}..."
-    virtualenv $VIRTUALENV
-    source ${VIRTUALENV}/bin/activate
+    python -m venv $VIRTUALENV
+    . ${VIRTUALENV}/bin/activate
     pip install -r requirements.txt
 fi
 
