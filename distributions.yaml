@@ -1,10 +1,10 @@
 ---
 distros:
   debian:
-    - stretch
     - buster
     - bullseye
+    - bookworm
   ubuntu:
-    - xenial
     - bionic
     - focal
+    - jammy
