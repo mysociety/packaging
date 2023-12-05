@@ -18,6 +18,9 @@ WORKDIR /home/builder
 RUN dh-make-perl --cpan Crypt::Idea
 
 WORKDIR /home/builder/libcrypt-idea-perl
+{% if codename == "jammy" -%}
+COPY files/rules ./debian/
+{% endif -%}
 RUN dpkg-buildpackage
 
 WORKDIR /home/builder

@@ -20,7 +20,13 @@ RUN wget -q {{ source_url }}/Geo-ShapeFile-{{ version }}.tar.gz \
       && tar xf Geo-ShapeFile-{{ version }}.tar.gz
 
 WORKDIR /home/builder/Geo-ShapeFile-{{ version }}
+{% if codename == "jammy" -%}
+RUN dh-make-perl
+COPY files/rules ./debian/
+RUN dpkg-buildpackage
+{% else -%}
 RUN dh-make-perl && dpkg-buildpackage
+{% endif -%}
 
 WORKDIR /home/builder
 CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]

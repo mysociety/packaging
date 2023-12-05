@@ -23,7 +23,13 @@ RUN wget -q https://cpan.metacpan.org/authors/id/C/CR/CREIN/Regexp-Common-dns-0.
       && tar xzf Regexp-Common-dns-0.00_01.tar.gz
 
 WORKDIR /home/builder/Regexp-Common-dns-0.00_01
+{% if codename == "jammy" -%}
+RUN dh-make-perl
+COPY files/rules ./debian/
+RUN dpkg-buildpackage
+{% else -%}
 RUN dh-make-perl && dpkg-buildpackage
+{% endif -%}
 
 WORKDIR /home/builder
 CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]

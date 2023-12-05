@@ -22,7 +22,13 @@ RUN wget -q https://github.com/mysociety/String-Ediff/archive/v${SOURCE_VERSION}
       tar xf libstring-ediff-perl_${SOURCE_VERSION}.orig.tar.gz
 
 WORKDIR /home/builder/String-Ediff-${SOURCE_VERSION}
+{% if codename == "jammy" -%}
+RUN dh-make-perl
+COPY files/rules ./debian/
+RUN dpkg-buildpackage
+{% else -%}
 RUN dh-make-perl && dpkg-buildpackage
+{% endif -%}
 
 WORKDIR /home/builder
 CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]
