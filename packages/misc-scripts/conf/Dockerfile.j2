@@ -4,6 +4,7 @@ LABEL maintainer="{{ vendor}} <{{ vendor_email }}>"
 USER builder
 WORKDIR /home/builder
 
+ARG TAG={{ version }}
 RUN git clone --recursive https://github.com/mysociety/misc-scripts.git
 COPY files/postinst .
 COPY files/postrm .
