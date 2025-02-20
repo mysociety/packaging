@@ -1,6 +1,6 @@
 ---
 iteration: ms1
-version: 1.38.0
+version: 1.39.0
 shared_package: true
 dependencies:
   - libcache-memcached-perl
@@ -15,6 +15,7 @@ dependencies:
   - libpath-class-perl
   - libunix-mknod-perl
   - libyaml-perl
+  - perl-doc
 
 suggests:
   - nodejs
