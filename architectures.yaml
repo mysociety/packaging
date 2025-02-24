@@ -1,0 +1,4 @@
+---
+architectures:
+  - arm64
+  - amd64

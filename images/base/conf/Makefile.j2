@@ -6,15 +6,53 @@ build:
 	@./bin/build.sh
 
 {% else %}
-all: {{ codenames | join(' ') }} 
+DISTRIBUTIONS := {{ codenames | join(' ') }}
 
-{% for codename in codenames %}
-.PHONEY: {{ codename }}
-{{ codename }}:
-	@echo "==> Building {{ codename }}..."
-	@./bin/build.sh {{ codename }}
+all: $(DISTRIBUTIONS)
 
-{% endfor %}
+.PHONY: $(DISTRIBUTIONS)
+$(DISTRIBUTIONS):
+	@echo "==> Building $@..."
+	@./bin/build.sh $@
+
+{% if can_target_arch %}
+ARCHITECTURES := {{ architectures | join(' ') }}
+# Handle 'make all-all'
+.PHONY: all-all
+all-all:
+	@for dist in $(DISTRIBUTIONS); do \
+		for arch in $(ARCHITECTURES); do \
+			echo "==> Building $$dist for $$arch..."; \
+			./bin/build.sh $$dist $$arch; \
+		done; \
+	done
+
+# 'make <distribution>-<architecture>'
+.PHONY: $(foreach d,$(DISTRIBUTIONS),$(foreach a,$(ARCHITECTURES),$(d)-$(a)))
+$(foreach d,$(DISTRIBUTIONS),$(foreach a,$(ARCHITECTURES),$(d)-$(a))):
+	@dist=$(shell echo $@ | cut -d- -f1); \
+	arch=$(shell echo $@ | cut -d- -f2); \
+	echo "==> Building $$dist for $$arch..."; \
+	./bin/build.sh $$dist $$arch
+
+# Handle 'make <distribution>-all'
+.PHONY: $(foreach d,$(DISTRIBUTIONS),$(d)-all)
+$(foreach d,$(DISTRIBUTIONS),$(d)-all):
+	@dist=$(shell echo $@ | cut -d- -f1); \
+	for arch in $(ARCHITECTURES); do \
+		echo "==> Building $$dist for $$arch..."; \
+		./bin/build.sh $$dist $$arch; \
+	done
+
+# Handle 'make all-<architecture>'
+.PHONY: $(foreach d,$(DISTRIBUTIONS),$(d)-all)
+$(foreach a,$(ARCHITECTURES),all-$(a)):
+	@arch=$(shell echo $@ | cut -d- -f2); \
+	for dist in $(DISTRIBUTIONS); do \
+		echo "==> Building $$dist for $$arch..."; \
+		./bin/build.sh $$dist $$arch; \
+	done
+{% endif %}
 {% endif %}
 
 .PHONEY: clean-deb clean-images clean-config clean
