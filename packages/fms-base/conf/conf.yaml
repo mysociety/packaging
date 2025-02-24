@@ -1,0 +1,9 @@
+---
+iteration: ms1
+version: 6.0
+can_target_arch: true
+skip_codenames:
+  - buster
+  - bionic
+  - focal
+  - jammy
