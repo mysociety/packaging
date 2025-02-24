@@ -5,16 +5,16 @@ FROM base-builder:{{ codename }}-latest
 {% endif %}
 LABEL maintainer="{{ vendor}} <{{ vendor_email }}>"
 
-RUN apt-get -qq update && apt-get -qq -y install git perl postgresql
+RUN apt-get -qq update && apt-get -qq -y install perl postgresql
 
 WORKDIR /home/builder
 USER builder
 
 ARG TAG={{ version }}
 RUN git clone --recursive https://github.com/mysociety/fixmystreet.git
-RUN git checkout v{{ version }}
 
 WORKDIR /home/builder/fixmystreet
+RUN git checkout v{{ version }}
 
 USER root
 RUN cp conf/packages.docker /opt/

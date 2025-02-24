@@ -1,0 +1,59 @@
+name: build-fms-base
+
+on:
+  push:
+
+jobs:
+  build:
+    strategy:
+      max-parallel: 1
+      matrix:
+        arch: ['amd64', 'arm64']
+        debian_release: ['bullseye', 'bookworm']
+
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.9.1'
+
+      # See: https://docs.docker.com/build/ci/github-actions/multi-platform/#build-and-load-multi-platform-images
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-config: |
+            {
+              "features": {
+                "containerd-snapshotter": true,
+                "debug": true
+              }
+            }
+
+      - name: Repo setup
+        run: ./script/update
+
+      - name: Build base
+        run: |
+          cd images/base
+          USE_HOST_USER=1 make ${{ matrix.debian_release }}-${{ matrix.arch }}
+
+      - name: Build package
+        run: |
+          cd packages/fms-base
+          make ${{ matrix.debian_release }}-${{ matrix.arch }}
+
+      - name: Check for package
+        run: |
+          cd packages/fms-base
+          ls -la deb/
+          ls -la deb/${{ matrix.debian_release }}
+
+      - name: Archive packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: packages/fms-base/deb/${{ matrix.debian_release }}/*.deb

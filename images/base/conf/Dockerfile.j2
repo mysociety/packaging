@@ -1,4 +1,8 @@
 FROM {{ distro }}:{{ codename }}
+
+ARG UID=1000
+ARG GID=1000
+
 ENV DEBIAN_FRONTEND noninteractive
 COPY sources.list.{{ codename }} /etc/apt/sources.list
 
@@ -16,11 +20,12 @@ RUN apt-get update -qq \
           lsb-release \
           ruby-dev \
           wget \
-        --no-install-recommends > /dev/null \
+        --no-install-recommends \
       && apt-get install -qq {% if codename == "bionic" %} -t {{ codename }}-backports {% endif %} debhelper \
       && rm -r /var/lib/apt/lists/*
 
 RUN gem install --no-document fpm
-RUN adduser --shell /bin/bash --disabled-password --gecos "" builder
+RUN groupadd -g $GID builder || true && \
+    adduser --shell /bin/bash --disabled-password --gecos "" --uid $UID --gid $GID builder
 COPY ./files/MyConfig.pm /home/builder/.cpan/CPAN/
 RUN chown -R builder:builder /home/builder/
