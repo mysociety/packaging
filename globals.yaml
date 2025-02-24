@@ -3,3 +3,5 @@ vendor: mySociety
 vendor_email: 'sysadmin@mysociety.org'
 skip_codenames: []
 shared_package: false
+can_target_arch: false
+skip_architectures: []

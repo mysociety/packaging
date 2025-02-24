@@ -1,4 +1,8 @@
+{% if arch %}
+FROM base-builder:{{ codename }}-{{ arch }}-latest
+{% else %}
 FROM base-builder:{{ codename }}-latest
+{% endif %}
 LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
 
 # Setup anything here that needs root, e.g. package installs, new repos, etc.
