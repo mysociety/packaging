@@ -1,0 +1,5 @@
+#!/bin/sh
+
+[ -f ../../.venv/packaging/bin/activate ] && . ../../.venv/packaging/bin/activate
+
+./bin/configure.py

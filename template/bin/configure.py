@@ -18,6 +18,7 @@ def merge(user, default):
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 targets = yaml.safe_load(open(os.path.join(parent_dir, '../../distributions.yaml')))
+archs = yaml.safe_load(open(os.path.join(parent_dir, '../../architectures.yaml')))
 global_data = yaml.safe_load(open(os.path.join(parent_dir, '../../globals.yaml')))
 
 if os.path.isfile(os.path.join(parent_dir, 'conf/conf.yaml')):
@@ -44,8 +45,14 @@ for template_file in glob.glob(os.path.join(parent_dir, 'conf/') + "*.j2"):
                         continue
                     codename_list.append(codename)
 
+        arch_list = []
+        for arch in archs['architectures']:
+            if arch in conf_data['skip_architectures']:
+                continue
+            arch_list.append(arch)
+
+        conf_data['architectures'] = arch_list
         conf_data['codenames'] = codename_list
-        
         if base_filename == "Makefile":
             with open(os.path.join(parent_dir, base_filename), 'w') as output_file:
                 output_file.write(template.render(conf_data))
@@ -56,5 +63,12 @@ for template_file in glob.glob(os.path.join(parent_dir, 'conf/') + "*.j2"):
                         continue
                     conf_data['distro'] = distro
                     conf_data['codename'] = codename
+
                     with open(os.path.join(parent_dir, f'{base_filename}.{codename}'), 'w') as output_file:
                         output_file.write(template.render(conf_data))
+                    if base_filename == 'Dockerfile' and conf_data['can_target_arch']:
+                        for arch in arch_list:
+                            conf_data['arch'] = arch
+                            with open(os.path.join(parent_dir, f'{base_filename}.{codename}.{arch}'), 'w') as output_file:
+                                output_file.write(template.render(conf_data))
+                            del conf_data['arch']

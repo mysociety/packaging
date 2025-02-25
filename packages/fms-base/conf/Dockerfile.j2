@@ -1,0 +1,36 @@
+{% if arch %}
+FROM base-builder:{{ codename }}-{{ arch }}-latest
+{% else %}
+FROM base-builder:{{ codename }}-latest
+{% endif %}
+LABEL maintainer="{{ vendor}} <{{ vendor_email }}>"
+
+RUN apt-get -qq update && apt-get -qq -y install perl postgresql
+
+WORKDIR /home/builder
+USER builder
+
+ARG TAG={{ version }}
+RUN git clone --recursive https://github.com/mysociety/fixmystreet.git
+
+WORKDIR /home/builder/fixmystreet
+RUN git checkout v{{ version }}
+
+USER root
+RUN cp conf/packages.docker /opt/
+RUN xargs -a "/opt/packages.docker" apt-get -qq -y install >/dev/null
+
+USER builder
+RUN ./script/bootstrap
+RUN fpm -s dir -t deb \
+      --vendor "mySociety" \
+      --maintainer "mySociety <sysadmin@mysociety.org>" \
+      --version "{{ version }}" \
+      --iteration "ms1" \
+      --architecture "native" \
+      --url "https://github.com/mysociety/fixmystreet" \
+      --description "mysociety's package containing build artefacts to speed up the process of deploying new FixMyStreet servers." \
+      -n "fms-base" \
+      ./local/=/data/fms_deps/perl_modules
+
+CMD ["sh", "-c", "/bin/mv *.deb ../deb/{{ codename }}"]

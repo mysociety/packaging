@@ -39,6 +39,24 @@ The `Makefile` includes targets for each individual target system, so you
 can also run things like `make buster` or `make focal` to build those if
 you want, and while testing the integration of a new target system.
 
+### Targeting an architecture
+
+Some packages let you specify the architecture to build against, in
+case it has native dependencies and your host machine's arch
+(which is what will be used when building, by default) doesn't match up
+with the arch you'll be installing the package on.
+
+This feature makes use of
+[Docker's multi-platform builds](https://docs.docker.com/build/building/multi-platform/).
+You may need to do some set-up (such as switching to the `containerd`
+image store) to get this working for you - the docs are very
+helpful here.
+
+Once done, you will need to build the `images/base` for the codename and
+architecture you're targeting, for example `make buster-amd64` or,
+for all distributions `make all-amd64`. And then do the same
+in the package directory.
+
 ## How it works
 
 The builds are completed in Docker containers and the Debian packages
@@ -53,8 +71,8 @@ The builds use a system of Jinja2 templates and YAML configuration files
 to make adding new target systems more straightforward and to standardise
 the way we configure, document and build packages.
 
-Target systems are listed in `distributions.yaml` and global variables
-in `globals.yaml`.
+Target systems are listed in `distributions.yaml`, architectures in
+`architectures.yaml` and global variables in `globals.yaml`.
 
 Individual builds for base images and packages can extend and override
 these values in their local `conf/conf.yaml` file, relative to their
