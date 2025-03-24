@@ -14,7 +14,7 @@ if command -v pyenv >/dev/null ; then
     fi 
 else
     echo "==> Not found pyenv, checking available python version..."
-    if [ "$(python3 --version | awk '{ $NF }')" != "$WANTED_PYTHON" ] ; then
+    if [ "$(python3 --version | awk '{print $NF }')" != "$WANTED_PYTHON" ] ; then
         echo "==> We require ${WANTED_PYTHON}. Fix that, and run me again."
         exit 1
     fi
