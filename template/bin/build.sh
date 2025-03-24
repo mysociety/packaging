@@ -21,12 +21,20 @@ if [ ! -f "$DOCKERFILE" ]; then
 fi
 
 echo "==> Building docker image..."
+if [ -n "$USE_HOST_USER" ]; then
+    HOST_UID=$(id -u)
+    HOST_GID=$(id -g)
+    BUILD_ARGS="--build-arg UID=$HOST_UID --build-arg GID=$HOST_GID"
+else
+    BUILD_ARGS=""
+fi
+
 if [ "$ARCH" == "none" ] ; then
     IMAGE_NAME="${SOFTWARE}-builder:${DIST}-latest"
-    BUILD_COMMAND="docker build -f $DOCKERFILE -t $IMAGE_NAME ."
+    BUILD_COMMAND="docker build $BUILD_ARGS -f $DOCKERFILE -t $IMAGE_NAME ."
 else
     IMAGE_NAME="${SOFTWARE}-builder:${DIST}-${ARCH}-latest"
-    BUILD_COMMAND="docker buildx build --platform linux/$ARCH -f $DOCKERFILE -t $IMAGE_NAME --load ."
+    BUILD_COMMAND="docker buildx build $BUILD_ARGS --platform linux/$ARCH -f $DOCKERFILE -t $IMAGE_NAME --load ."
 fi
 $BUILD_COMMAND
 

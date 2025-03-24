@@ -1,0 +1,63 @@
+name: build-fms-base
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Reference to checkout in the FMS repo before building.'
+        required: true
+        type: string
+        default: 'master'
+jobs:
+  build:
+    strategy:
+      max-parallel: 1
+      matrix:
+        arch: ['amd64']
+        debian_release: ['bullseye', 'bookworm']
+
+    # 3.9.1 is not available on 22.04 or 24.04 for x64.
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.9.1'
+
+      # See: https://docs.docker.com/build/ci/github-actions/multi-platform/#build-and-load-multi-platform-images
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-config: |
+            {
+              "features": {
+                "containerd-snapshotter": true,
+                "debug": true
+              }
+            }
+
+      - name: Update config values
+        run: |
+          sed -i 's/^ref: .*/ref: ${{ inputs.ref }}/' packages/fms-base/conf/conf.yaml
+
+      - name: Repo setup
+        run: ./script/update
+
+      - name: Build base
+        run: |
+          cd images/base
+          USE_HOST_USER=1 make ${{ matrix.debian_release }}-${{ matrix.arch }}
+
+      - name: Build package
+        run: |
+          cd packages/fms-base
+          make ${{ matrix.debian_release }}-${{ matrix.arch }}
+
+      - name: Archive packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: fms-base-${{ matrix.debian_release }}-${{ matrix.arch }}
+          path: packages/fms-base/deb/${{ matrix.debian_release }}/*.deb
