@@ -1,0 +1,44 @@
+{% if arch %}
+FROM base-builder:{{ codename }}-{{ arch }}-latest
+{% else %}
+FROM base-builder:{{ codename }}-latest
+{% endif %}
+LABEL maintainer="{{ vendor}} <{{ vendor_email }}>"
+
+RUN apt-get -qq update && apt-get -qq -y install perl postgresql
+
+WORKDIR /home/builder
+USER builder
+
+RUN git clone --recursive https://github.com/mysociety/fixmystreet.git
+WORKDIR /home/builder/fixmystreet
+RUN git checkout {{ ref }}
+RUN echo "SHORT_COMMIT=$(git rev-parse --short HEAD)" >> /home/builder/.env
+RUN echo "TIMESTAMP=$(date +%Y%m%d%H%M)" >> /home/builder/.env
+RUN echo "VERSION=$(git describe --tags | sed -E 's/^v([0-9]+\.[0-9]+).*/\1/')" >> /home/builder/.env
+
+USER root
+RUN cp conf/packages.docker /opt/
+RUN xargs -a "/opt/packages.docker" apt-get -qq -y install >/dev/null
+
+USER builder
+# Passing development flag so UK and Zurich modules are included.
+RUN ./script/bootstrap --development
+
+# We don't need the cache folder.
+RUN rm -rf ./local/cache
+
+RUN echo "SHORT_COMMIT=$(git rev-parse --short HEAD)" >> /home/builder/.env
+RUN export $(cat /home/builder/.env | xargs) && \
+     fpm -s dir -t deb \
+      --vendor "mySociety" \
+      --maintainer "mySociety <sysadmin@mysociety.org>" \
+      --version "${VERSION}" \
+      --iteration "git${TIMESTAMP}.${SHORT_COMMIT}" \
+      --architecture "native" \
+      --url "https://github.com/mysociety/fixmystreet" \
+      --description "mysociety's package containing build artefacts to speed up the process of deploying new FixMyStreet servers." \
+      -n "fms-base" \
+      ./local/=/opt/fixmystreet
+
+CMD ["sh", "-c", "/bin/mv *.deb ../deb/{{ codename }}"]

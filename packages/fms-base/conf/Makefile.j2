@@ -1,0 +1,72 @@
+.PHONEY: all
+{% if shared_package %}
+all: build
+
+build:
+	@./bin/build.sh
+
+{% else %}
+DISTRIBUTIONS := {{ codenames | join(' ') }}
+
+all: $(DISTRIBUTIONS)
+
+.PHONY: $(DISTRIBUTIONS)
+$(DISTRIBUTIONS):
+	@echo "==> Building $@..."
+	@./bin/build.sh $@
+
+{% if can_target_arch %}
+ARCHITECTURES := {{ architectures | join(' ') }}
+# Handle 'make all-all'
+.PHONY: all-all
+all-all:
+	@for dist in $(DISTRIBUTIONS); do \
+		for arch in $(ARCHITECTURES); do \
+			echo "==> Building $$dist for $$arch..."; \
+			./bin/build.sh $$dist $$arch; \
+		done; \
+	done
+
+# 'make <distribution>-<architecture>'
+.PHONY: $(foreach d,$(DISTRIBUTIONS),$(foreach a,$(ARCHITECTURES),$(d)-$(a)))
+$(foreach d,$(DISTRIBUTIONS),$(foreach a,$(ARCHITECTURES),$(d)-$(a))):
+	@dist=$(shell echo $@ | cut -d- -f1); \
+	arch=$(shell echo $@ | cut -d- -f2); \
+	echo "==> Building $$dist for $$arch..."; \
+	./bin/build.sh $$dist $$arch
+
+# Handle 'make <distribution>-all'
+.PHONY: $(foreach d,$(DISTRIBUTIONS),$(d)-all)
+$(foreach d,$(DISTRIBUTIONS),$(d)-all):
+	@dist=$(shell echo $@ | cut -d- -f1); \
+	for arch in $(ARCHITECTURES); do \
+		echo "==> Building $$dist for $$arch..."; \
+		./bin/build.sh $$dist $$arch; \
+	done
+
+# Handle 'make all-<architecture>'
+.PHONY: $(foreach d,$(DISTRIBUTIONS),$(d)-all)
+$(foreach a,$(ARCHITECTURES),all-$(a)):
+	@arch=$(shell echo $@ | cut -d- -f2); \
+	for dist in $(DISTRIBUTIONS); do \
+		echo "==> Building $$dist for $$arch..."; \
+		./bin/build.sh $$dist $$arch; \
+	done
+{% endif %}
+{% endif %}
+
+.PHONEY: clean-deb clean-images clean-config clean
+clean-deb:
+	@echo "==> Removing old artefacts..."
+	@rm -fr deb/* || echo "==> No artefacts found."
+
+clean-images:
+	@echo "==> Removing old Docker images..."
+	@docker image ls -q $(shell basename $(shell pwd))-builder | xargs docker rmi -f 2>/dev/null || echo "==> No images found."
+
+clean-config:
+	@echo "==> Cleaning up locally generated config..."
+	@rm -f Dockerfile*
+	@rm -f Makefile
+
+clean: clean-deb clean-images clean-config

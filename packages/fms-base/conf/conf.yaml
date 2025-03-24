@@ -1,0 +1,8 @@
+---
+ref: master
+can_target_arch: true
+skip_codenames:
+  - buster
+  - bionic
+  - focal
+  - jammy
