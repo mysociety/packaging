@@ -1,6 +1,6 @@
 ---
 iteration: ms1
-version: 1.40.0
+version: 1.41.0
 shared_package: true
 dependencies:
   - libcache-memcached-perl
