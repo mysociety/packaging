@@ -1,8 +1,8 @@
 FROM {{ distro }}:{{ codename }}
 ENV DEBIAN_FRONTEND=noninteractive
-COPY sources.list.{{ codename }} /etc/apt/sources.list
+COPY sources.list.{{ codename }} /etc/apt/sources.list.d/debian.list
 
-RUN apt-get update -qq \
+RUN rm -f /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources; apt-get update -qq \
       && apt-get install -qq \
           apt-transport-https \
           build-essential \
