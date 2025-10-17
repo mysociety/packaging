@@ -1,10 +1,9 @@
 ---
 distros:
   debian:
-    - buster
     - bullseye
     - bookworm
+    - trixie
   ubuntu:
-    - bionic
-    - focal
     - jammy
+
