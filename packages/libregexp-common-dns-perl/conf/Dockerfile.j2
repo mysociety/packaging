@@ -1,22 +1,15 @@
 FROM base-builder:{{ codename }}-latest
 LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
 
-ENV DEBEMAIL {{ vendor_email }}
-ENV DEBFULLNAME {{ vendor }}
+ENV DEBEMAIL={{ vendor_email }}
+ENV DEBFULLNAME={{ vendor }}
 
 RUN apt-get -qq update \
       && apt-get install -qq \
            dh-make-perl \
-{% if codename == "xenial" %}
-           libmodule-build-perl \
-{% endif %}
            libregexp-common-perl
 
 USER builder
-{% if codename == "xenial" %}
-RUN git config --global user.email "{{ vendor_email }}" \
-      && git config --global user.name "{{ vendor }}"
-{% endif %}
 
 WORKDIR /home/builder
 RUN wget -q https://cpan.metacpan.org/authors/id/C/CR/CREIN/Regexp-Common-dns-0.00_01.tar.gz \

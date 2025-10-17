@@ -1,8 +1,8 @@
 FROM base-builder:{{ codename }}-latest
 LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
 
-ENV DEBEMAIL {{ vendor_email }}
-ENV DEBFULLNAME {{ vendor }}
+ENV DEBEMAIL={{ vendor_email }}
+ENV DEBFULLNAME={{ vendor }}
 
 RUN apt-get update -qq && \
       apt-get install -qq \
@@ -10,10 +10,6 @@ RUN apt-get update -qq && \
       && rm -fr /var/lib/apt/lists/*
 
 USER builder
-{% if codename == "xenial" %}
-RUN git config --global user.email "{{ vendor_email }}" \
-      && git config --global user.name "{{ vendor }}"
-{% endif %}
 
 WORKDIR /home/builder
 RUN wget -q {{ source_url }}/Geo-ShapeFile-{{ version }}.tar.gz \
