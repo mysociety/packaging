@@ -1,7 +1,11 @@
 FROM base-builder:{{ codename }}-latest
 LABEL maintainer="{{ vendor }} <{{ vendor_email }}>"
 
+{% if codename == 'bullseye' -%}
+RUN mkdir -p /etc/apt/keyrings/ && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key > /etc/apt/keyrings/nodesource.asc
+{% else -%}
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key > /etc/apt/keyrings/nodesource.asc
+{% endif -%}
 
 {% if codename == 'bionic' -%}
     {% set node_version = '16' -%}
