@@ -13,17 +13,13 @@ RUN apt-get update -qq \
          libhiredis-dev \
          libjemalloc-dev \
          libncurses-dev \
-         libpcre3-dev \
+         libpcre2-dev \
+         libssl-dev \
          libtool \
          libvarnishapi-dev \
          pkg-config \
-{% if codename != "bionic" and codename != "stretch" and codename != "buster" %}
          python3-docutils \
          python3-sphinx \
-{% else %}
-         python-docutils \
-         python-sphinx \
-{% endif %}
          redis-server \
          varnish \
        && rm -fr /var/lib/apt/lists/*
@@ -31,7 +27,7 @@ RUN apt-get update -qq \
 USER builder
 
 WORKDIR /home/builder
-{% if codename == "stretch" or codename == "bullseye" %}
+{% if codename == "bookworm" or codename == "bullseye" %}
 RUN git clone https://github.com/mysociety/libvmod-redis.git
 {% else %}
 RUN git clone https://github.com/carlosabalde/libvmod-redis.git
@@ -39,7 +35,7 @@ RUN git clone https://github.com/carlosabalde/libvmod-redis.git
 
 WORKDIR /home/builder/libvmod-redis
 
-{% if codename == "stretch" or codename == "bullseye" %}
+{% if codename == "bookworm" or codename == "bullseye" %}
 RUN git checkout origin/{{ codename }} \
 {% else %}
 RUN git checkout origin/{{ varnish_version[codename] }}-archived \
