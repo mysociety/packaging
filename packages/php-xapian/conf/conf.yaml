@@ -1,13 +1,17 @@
 ---
 iteration: 1
-version: 1.4.18
 source_url: 'http://deb.debian.org/debian/pool/main/x/xapian-bindings/'
-php_versions:
-  bullseye: 7.4
-  stretch: 7.0
-  buster: 7.3
-  bionic: 7.2
-  xenial: 7.0
-  focal: 7.4
+versions:
+  bookworm:
+    php: 8.2
+    phpapi: 20220829
+    xapian: 1.4.22
+  trixie:
+    php: 8.4
+    phpapi: 20240924
+    xapian: 1.4.29
 skip_codenames:
-  - xenial
+  - bullseye
+  - jammy
+
+  

@@ -5,36 +5,40 @@ ARG SOURCE_URL={{ source_url }}
 
 RUN apt-get -qq update \
       && apt-get install -qq \
-         php{{ php_versions[codename] }}-dev \
-         php{{ php_versions[codename] }}-cli \
-{% if codename == "buster" %}
-      && apt-get install -qq -t buster-backports libxapian-dev libxapian30 xapian-tools \
-{% elif codename == "bullseye" %}
-      && apt-get install -qq libxapian-dev libxapian30 xapian-tools \
-{% endif %}
+         libxapian30 \
+         libxapian-dev \
+         php{{ versions[codename].php }}-cli \
+         php{{ versions[codename].php }}-dev \
+         xapian-tools \
       && rm -fr /var/lib/apt/lists/*
-
-{% if codename != "buster" and codename != "bullseye" %}
-RUN mkdir /root/debs
-COPY ./src/{{ codename }}/* /root/debs/
-RUN dpkg -i -R /root/debs && rm -fr /root/debs
-{% endif %}
 
 WORKDIR /home/builder
 USER builder
 
 # Get the sources
-RUN wget -q ${SOURCE_URL}/xapian-bindings_{{ version }}.orig.tar.xz \
-      && wget -q ${SOURCE_URL}/xapian-bindings_{{ version }}-{{ iteration }}.debian.tar.xz \
-      && wget -q ${SOURCE_URL}/xapian-bindings_{{ version }}-{{ iteration }}.dsc \
-      && tar xJf xapian-bindings_{{ version }}.orig.tar.xz \
-      && tar xJf xapian-bindings_{{ version }}-{{ iteration }}.debian.tar.xz -C xapian-bindings-{{ version }}
+RUN wget -q ${SOURCE_URL}/xapian-bindings_{{ versions[codename].xapian }}.orig.tar.xz \
+      && tar xJf xapian-bindings_{{ versions[codename].xapian }}.orig.tar.xz
 
 # Setup
-WORKDIR xapian-bindings-{{ version }}
-RUN echo php7 > debian/bindings-to-package \
-      && ./debian/rules maint PHP7_VERSIONS={{ php_versions[codename] }} \
-      && debuild -us -uc
+WORKDIR xapian-bindings-{{ versions[codename].xapian }}
+RUN ./configure --with-php XAPIAN_CONFIG=/usr/bin/xapian-config PHP_CONFIG=/usr/bin/php-config \
+    && make \
+    && chmod 0644 php/.libs/xapian.so \
+    && fpm -s dir -t deb \
+      --vendor "mySociety" \
+      --maintainer "mySociety <sysadmin@mysociety.org>" \
+      --version "{{ versions[codename].xapian }}" \
+      --iteration "{{ iteration }}" \
+      --architecture "amd64" \
+      --url "https://xapian.org/" \
+      --description "Xapian bindings for PHP {{ versions[codename].php }}" \
+      --depends "phpapi-{{ versions[codename].phpapi }}" \
+      --depends "php{{ versions[codename].php }}-common" \
+      --depends "libxapian30 (>={{ versions[codename].xapian }}~)" \
+      -n "php-xapian" \
+      ./php/docs/index.html=/usr/share/doc/php-xapian/index.html \
+      ./php/docs/examples/=/usr/share/doc/php-xapian/examples/ \
+      ./php/.libs/xapian.so=/usr/lib/php/{{ versions[codename].phpapi }}/xapian.so
 
 WORKDIR /home/builder
-CMD ["sh", "-c", "/bin/mv *.deb ./deb/{{ codename }}"]
+CMD ["sh", "-c", "/bin/mv xapian-bindings-{{ versions[codename].xapian }}/*.deb ./deb/{{ codename }}"]
