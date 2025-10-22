@@ -4,27 +4,12 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-WANTED_PYTHON=$(cat .python-version)
-
-if command -v pyenv >/dev/null ; then
-    echo "==> Found pyenv..."
-    if [ -z "$(pyenv version-name 2>/dev/null)" ] ; then
-        echo "==> Installing Python ${WANTED_PYTHON} via pyenv..."
-        pyenv install --skip-existing
-    fi 
-else
-    echo "==> Not found pyenv, checking available python version..."
-    if [ "$(python3 --version | awk '{ $NF }')" != "$WANTED_PYTHON" ] ; then
-        echo "==> We require ${WANTED_PYTHON}. Fix that, and run me again."
-        exit 1
-    fi
-fi
-
-VIRTUALENV=".venv/packaging"
+VIRTUALENV="venv"
 if [ ! -f "${VIRTUALENV}/bin/activate" ] ; then
     echo "==> Setting up virtualenv at ${VIRTUALENV}..."
     python -m venv $VIRTUALENV
     . ${VIRTUALENV}/bin/activate
+    pip install --upgrade pip
     pip install -r requirements.txt
 fi
 
