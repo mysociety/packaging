@@ -72,8 +72,9 @@ Most of the other templated files are intended to be locally modified and
 committed directly, with some caveats.
 
 `configure`
-: This must at least retain what's in the template, but arbitrary other
-things can be added.
+: This is a templated shared script that sets up the rest of the build
+and shouldn't be edited locally; it checks for `bin/local.sh` in each build
+so you can add specific commands there if a build needs special steps.
 
 `bin/build.sh`
 : This script is called from the generated `Makefile` to perform the

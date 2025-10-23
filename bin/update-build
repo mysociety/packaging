@@ -14,6 +14,7 @@ if [ "$1" == "--all" ] ; then
     for dir in * ; do
         echo "==> Updating ${dir}..."
         cp ../template/bin/* "${dir}/bin/"
+        cp ../template/configure "${dir}/"
     done
 elif [ ! -d "packages/${1}" ] ; then
     echo "Build doesn't exist - perhaps you meant to run setup-build instead?"
@@ -21,4 +22,5 @@ elif [ ! -d "packages/${1}" ] ; then
 else
     echo "==> Updating ${1}..."
     cp template/bin/* "packages/${1}/bin/"
+    cp template/configure "packages/${1}/"
 fi

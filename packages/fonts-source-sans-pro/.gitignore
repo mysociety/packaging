@@ -1,5 +1,6 @@
 /Dockerfile*
 /Makefile
+/configure
 bin/build.sh
 bin/configure.py
 /fonts-source-sans-pro/*.ttf

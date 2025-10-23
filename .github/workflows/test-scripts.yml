@@ -1,0 +1,30 @@
+name: Test script/update
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test-update-script:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.11', '3.13']
+    
+    name: Test with Python ${{ matrix.python-version }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Display Python version
+        run: python --version
+
+      - name: Run script/update
+        run: ./script/update

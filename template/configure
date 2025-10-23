@@ -1,5 +1,8 @@
 #!/bin/sh
 
-[ -f ../../.venv/packaging/bin/activate ] && . ../../.venv/packaging/bin/activate
+[ -f ../../venv/bin/activate ] && . ../../venv/bin/activate
+
+# Run any local custom commands
+[ -x ./bin/local.sh ] && ./bin/local.sh
 
 ./bin/configure.py
