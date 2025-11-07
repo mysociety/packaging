@@ -5,3 +5,5 @@ varnish_version:
   bookworm: 7.1
   bullseye: 6.5
   focal: 6.2
+skip_codenames:
+  - jammy
